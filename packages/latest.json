@@ -1,0 +1,11 @@
+{
+  "version": "1.2.8",
+  "notes": "Aggiornamento di Maestro: desktop, interfaccia e motore WSL inclusi.",
+  "pub_date": "2026-11-03T15:30:14.518Z",
+  "platforms": {
+    "windows-x86_64": {
+      "url": "https://github.com/MattiaPaiano91/maestro-releases/releases/download/v1.2.8/Maestro_1.2.8_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRZjVxQTZmMWQ3Z0U3alFYTVJrZy9QVCtmTlBodmZWd25jZFAzS2JqLzFVTzBpYUJGa3pFSm1PeVM0dU9KazhUN1RjTElaN2kwRnRyR1kyNElaZ0FwSThIWFlyaWhyN3dFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkzNzE5NzgzCWZpbGU6TWFlc3Ryb18xLjIuOF94NjQtc2V0dXAuZXhlCXZlcnNpb246MS4yLjgKNU1DOVk5elFpTmdJeENRR1pMY3RwT28yUjBQRGdkRUZQbm1QRHp1eUJSWTRFYVZ4Mlk1dklmSG9BOTNWYmUrTEN3UndFVWVyOCt1UURIVUcyNzR4QkE9PQo="
+    }
+  }
+}
