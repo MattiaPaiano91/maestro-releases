@@ -1,0 +1,45 @@
+name: Publish public release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: public-release
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate release packages
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          from urllib.parse import unquote, urlparse
+          manifest = json.loads(Path('packages/latest.json').read_text())
+          assert os.environ['RELEASE_TAG'] == 'v' + manifest['version']
+          package = manifest['platforms']['windows-x86_64']
+          url = urlparse(package['url'])
+          expected = 'https://github.com/MattiaPaiano91/maestro-releases/releases/download/' + os.environ['RELEASE_TAG'] + '/'
+          assert package['url'].startswith(expected)
+          installer = Path('packages') / Path(unquote(url.path)).name
+          assert installer.is_file() and installer.stat().st_size > 0
+          assert installer.with_suffix('.exe.sig').read_text().strip() == package['signature']
+          assert sorted(p.name for p in Path('packages').iterdir()) == sorted([installer.name, installer.name + '.sig', 'latest.json'])
+          PY
+      - name: Publish installer and signed update manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" packages/* --clobber
+          else
+            gh release create "$RELEASE_TAG" packages/* --verify-tag --draft --title "Maestro $RELEASE_TAG" --notes-file RELEASE_NOTES.md
+          fi
+          gh release edit "$RELEASE_TAG" --draft=false --latest
