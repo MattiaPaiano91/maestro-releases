@@ -1,45 +1,110 @@
 name: Publish public release
 on:
   push:
-    tags: ['v*']
+    branches: [main]
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: public-release
   cancel-in-progress: false
 jobs:
   publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Validate release packages
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Check version and immutable releases
+        id: policy
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           python3 - <<'PY'
-          import json, os
+          import json, os, re, subprocess
+          from pathlib import Path
+          def api(path):
+              result = subprocess.run(['gh', 'api', path], capture_output=True, text=True)
+              if result.returncode:
+                  if 'HTTP 404' in result.stderr:
+                      return None
+                  raise RuntimeError(result.stderr)
+              return json.loads(result.stdout)
+          manifest = json.loads(Path('packages/latest.json').read_text())
+          version = manifest['version']
+          assert re.fullmatch(r'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)', version)
+          tag = 'v' + version
+          repository = os.environ['GITHUB_REPOSITORY']
+          existing = api(f'repos/{repository}/releases/tags/{tag}')
+          latest = api(f'repos/{repository}/releases/latest')
+          remote = subprocess.check_output(['git', 'ls-remote', 'origin', 'refs/heads/main'], text=True).split()[0]
+          current = remote == os.environ['GITHUB_SHA']
+          newer = latest and tuple(map(int, latest['tag_name'].removeprefix('v').split('.'))) > tuple(map(int, version.split('.')))
+          publish = current and not newer and not (existing and not existing['draft'])
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'publish={str(bool(publish)).lower()}\ntag={tag}\n')
+          print(f'{tag}: publish={bool(publish)}')
+          PY
+      - name: Validate staged packages and source provenance
+        if: steps.policy.outputs.publish == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.policy.outputs.tag }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, subprocess
           from pathlib import Path
           from urllib.parse import unquote, urlparse
           manifest = json.loads(Path('packages/latest.json').read_text())
-          assert os.environ['RELEASE_TAG'] == 'v' + manifest['version']
+          tag = os.environ['RELEASE_TAG']
+          assert tag == 'v' + manifest['version']
+          source = Path('SOURCE_COMMIT').read_text().strip()
+          assert re.fullmatch(r'[a-f0-9]{40}', source)
+          assert f'Source-Commit: {source}' in Path('RELEASE_NOTES.md').read_text().splitlines()
+          subprocess.run(['git', 'diff', '--exit-code', tag, 'HEAD', '--', 'packages', 'SOURCE_COMMIT', 'RELEASE_NOTES.md'], check=True)
           package = manifest['platforms']['windows-x86_64']
           url = urlparse(package['url'])
-          expected = 'https://github.com/MattiaPaiano91/maestro-releases/releases/download/' + os.environ['RELEASE_TAG'] + '/'
+          expected = f'https://github.com/MattiaPaiano91/maestro-releases/releases/download/{tag}/'
           assert package['url'].startswith(expected)
-          installer = Path('packages') / Path(unquote(url.path)).name
+          filename = unquote(url.path.rsplit('/', 1)[-1])
+          assert filename.endswith('.exe') and '/' not in filename and '\\' not in filename
+          installer = Path('packages') / filename
           assert installer.is_file() and installer.stat().st_size > 0
           assert installer.with_suffix('.exe.sig').read_text().strip() == package['signature']
-          assert sorted(p.name for p in Path('packages').iterdir()) == sorted([installer.name, installer.name + '.sig', 'latest.json'])
+          assert sorted(p.name for p in Path('packages').iterdir()) == sorted([filename, filename + '.sig', 'latest.json'])
           PY
-      - name: Publish installer and signed update manifest
+      - name: Publish verified assets without replacing existing files
+        if: steps.policy.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ steps.policy.outputs.tag }}
         run: |
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" packages/* --clobber
-          else
-            gh release create "$RELEASE_TAG" packages/* --verify-tag --draft --title "Maestro $RELEASE_TAG" --notes-file RELEASE_NOTES.md
-          fi
-          gh release edit "$RELEASE_TAG" --draft=false --latest
+          python3 - <<'PY'
+          import hashlib, json, os, subprocess, tempfile
+          from pathlib import Path
+          tag = os.environ['RELEASE_TAG']
+          def gh(*args):
+              return subprocess.run(['gh', *args], check=True, capture_output=True, text=True).stdout
+          result = subprocess.run(['gh', 'release', 'view', tag, '--json', 'isDraft,assets'], capture_output=True, text=True)
+          if result.returncode:
+              gh('release', 'create', tag, '--verify-tag', '--draft', '--title', f'Maestro {tag}', '--notes-file', 'RELEASE_NOTES.md')
+          else:
+              assert json.loads(result.stdout)['isDraft'], 'A published release is immutable'
+          for package in sorted(Path('packages').iterdir()):
+              release = json.loads(gh('release', 'view', tag, '--json', 'isDraft,assets'))
+              assert release['isDraft'], 'A published release is immutable'
+              if not any(asset['name'] == package.name for asset in release['assets']):
+                  gh('release', 'upload', tag, str(package))
+          with tempfile.TemporaryDirectory() as downloaded:
+              gh('release', 'download', tag, '--dir', downloaded)
+              assert sorted(p.name for p in Path(downloaded).iterdir()) == sorted(p.name for p in Path('packages').iterdir())
+              for package in Path('packages').iterdir():
+                  assert hashlib.sha256(package.read_bytes()).digest() == hashlib.sha256((Path(downloaded) / package.name).read_bytes()).digest()
+          latest = json.loads(gh('api', f'repos/{os.environ["GITHUB_REPOSITORY"]}/releases/latest'))
+          current_version = tuple(map(int, tag[1:].split('.')))
+          assert current_version > tuple(map(int, latest['tag_name'].removeprefix('v').split('.'))), 'A newer or equal release is already public'
+          gh('release', 'edit', tag, '--draft=false', '--latest')
+          PY
