@@ -1,13 +1,14 @@
-## 2026-11-14 — Versione 2.0.0: memoria condivisa e interoperabilità
+## 2026-11-16 — Versione 2.1.0: memoria selettiva e daemon persistente
 
-- Introdotta la memoria di progetto condivisa fra Aule, con persistenza e ricerca vettoriale locali, fonti, revisioni e un indice leggero nel progetto. Il consolidamento e gli embedding usano servizi API configurabili.
-- Aggiunti i tool MCP di ricerca e consultazione scoped per progetto e la loro configurazione nelle sessioni Codex e ACP. Il supporto delle CLI reali dipende dal runtime installato; Pi richiede un'estensione dedicata.
-- Collegati checkpoint a fine turno, cambio agente, archiviazione e interruzione, con cursori persistenti e recupero dei checkpoint interrotti.
-- Bloccata la consultazione durante sincronizzazioni e modifiche Git non elaborate; aggiunti nell'Aula stato, file modificati e azioni di sincronizzazione o disabilitazione.
-- Aggiunte nelle impostazioni la configurazione dei servizi memoria ed embedding e la verifica delle connessioni. Le chiavi restano fuori dal database e non vengono restituite alla UI.
-- Estesa l'interoperabilità a nove provider con capability dichiarate, controlli UI coerenti e matrice di compatibilità; le integrazioni senza runtime reale restano da verificare.
-- Rafforzati il rilevamento delle modifiche ripetute ai file, la coerenza tra checkpoint e revisioni e la protezione delle chat isolate dall'accesso a server MCP esterni.
+- Sostituito il controllo Git globale con un coordinatore centrale e un watcher filesystem selettivo: durante il lavoro di agenti/subagenti il progetto è `Suspended`, mentre modifiche esterne successive invalidano soltanto le memorie collegate ai file il cui SHA-256 è cambiato.
+- Separati e persistiti stato del monitor e stato della memoria; aggiunti freeze per progetto e interruttore globale, riattivazione con riconciliazione conservativa e blocco autoritativo di `memory_search` e `memory_get` per scope disabilitati, invalidati o non riconciliati.
+- Introdotti riferimenti molti-a-molti tra memoria e file, migrazione dello schema 2.0, gestione di delete, rename, symlink e repository non Git e rimozione immediata degli embedding derivati dopo un'invalidazione.
+- La panoramica dell'Aula mostra file e porzioni invalidate e offre eliminazione selettiva, eliminazione dell'intero progetto o rigenerazione esplicita tramite Memory Agent con prompt facoltativo. Gli avvisi ravvicinati sono aggregati e persistono con la UI chiusa.
+- Il motore desktop resta attivo quando la UI viene chiusa, usa un lock di avvio e viene sostituito in sicurezza quando versione o protocollo del daemon non corrispondono; il supervisor di login Windows resta una scelta esplicita dell'installazione.
+- Stabilizzato il menu azioni delle Aule durante gli aggiornamenti in background ed esclusi dai checkpoint i thread interni usati per generare i titoli.
 
-[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.0.0)
+Verifiche: 139 test Rust superati (2 prove reali escluse), 34 JavaScript, 9 del launcher desktop e 90 test browser end-to-end. Inclusi migrazione dello schema precedente, freeze globale/per progetto, invalidazione file-specifica, symlink interni/retarget esterni, filtro MCP autoritativo e check Tauri sul target Windows MSVC.
 
-Source-Commit: 7c3a56f56ec5b33a8093a87fa7af3b442dc43705
+[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.0)
+
+Source-Commit: 90e73551328ff8968b2241726762cc753cc694c6
