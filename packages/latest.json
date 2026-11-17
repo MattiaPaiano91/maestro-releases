@@ -1,11 +1,11 @@
 {
-  "version": "2.1.1",
-  "notes": "## 2026-11-17 — Versione 2.1.1: avvio stabile del motore desktop in WSL\n\n- Mantenuto un processo `wsl.exe` come supervisore della sessione che ospita il motore desktop; evitato che WSL termini il daemon quando il launcher esce subito dopo `nohup`.\n- Il lock di avvio viene rilasciato dopo la scrittura del PID, così una nuova finestra può rilevare e riusare il motore già attivo senza creare processi duplicati.\n- Documentato il comportamento del supervisore e aggiunto il controllo del launcher alla suite desktop.\n\n[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.1)\n\nSource-Commit: b72f5fbaaccb4fb39c306e365113b2da567bd560",
-  "pub_date": "2026-11-17T08:31:27.250Z",
+  "version": "2.1.2",
+  "notes": "## 2026-11-17 — Versione 2.1.2: dati Maestro indipendenti dall’agente\n\n- Le sessioni scomparse dall’elenco Codex non vengono più eliminate dal catalogo Maestro: restano collegate all’Aula, marcate come non disponibili e tornano normali se il provider le espone di nuovo.\n- Le Aule conservate vengono mostrate anche quando il payload della sessione nativa non è più disponibile, evitando il conteggio senza righe corrispondenti.\n- Aggiunto l’archivio globale **Note Maestro**, con lettura e modifica delle note anche quando la conversazione originale non esiste più.\n- Le API delle note non richiedono più che il thread nativo sia presente nel catalogo; eliminazione esplicita della conversazione ed eliminazione dei dati Maestro restano operazioni distinte.\n- Aggiornato il contratto del progetto per impedire che configurazioni o credenziali di un provider cancellino o nascondano Aule e note.\n\n[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.2)\n\nSource-Commit: ca58be4ec404edf318e61832748d5cad300dc76f",
+  "pub_date": "2026-11-17T09:01:20.474Z",
   "platforms": {
     "windows-x86_64": {
-      "url": "https://github.com/MattiaPaiano91/maestro-releases/releases/download/v2.1.1/Maestro_2.1.1_x64-setup.exe",
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRZjVxQTZmMWQ3Z1AzMjl4U1l3Z3NDMlY4eDF6WWlnMXJvdVViaHhONEpkd2JETzNIVStiTEFHM0pzblM2M052U2pxV1ZhUHJsei96MjZrbVN2UWc1SVRHU0JsN1FyeHdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0OTA0MjY3CWZpbGU6TWFlc3Ryb18yLjEuMV94NjQtc2V0dXAuZXhlCXZlcnNpb246Mi4xLjEKZ2N4blJRV2dxcTVvbGxxWnNqbGNqVDhtbWlHWlpVT1BVSUdaOEcxRGE0WCtKVi91OHhOMG45U3pDRlJ2L1krQWFLT1I0aFJuL2Fxb2ZhMmdwWXNUQlE9PQo="
+      "url": "https://github.com/MattiaPaiano91/maestro-releases/releases/download/v2.1.2/Maestro_2.1.2_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRZjVxQTZmMWQ3Z0VBWTZrS2lHaitMV01HaXNFNTI3WWV1VGdFNlA5c2VwZjFRc2JNaVdrQjFwcWsvZzFpUmJOVkptUks4c3ArSlpmYW9manBCVW5VMHRnSVRuRkZ3RmcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0OTA2MDYyCWZpbGU6TWFlc3Ryb18yLjEuMl94NjQtc2V0dXAuZXhlCXZlcnNpb246Mi4xLjIKeXliOVliQmJDOE1lamFYazgyNEtCWHhoM1RodmsxK3BFdEpyOGtkU3QvOTN1RWl4Ti80L0NGYk41YTZZTVdESUFkemNLMUtRT0p3NWZ3V1diMk9lQmc9PQo="
     }
   }
 }

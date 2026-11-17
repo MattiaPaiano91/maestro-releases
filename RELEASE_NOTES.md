@@ -1,9 +1,11 @@
-## 2026-11-17 — Versione 2.1.1: avvio stabile del motore desktop in WSL
+## 2026-11-17 — Versione 2.1.2: dati Maestro indipendenti dall’agente
 
-- Mantenuto un processo `wsl.exe` come supervisore della sessione che ospita il motore desktop; evitato che WSL termini il daemon quando il launcher esce subito dopo `nohup`.
-- Il lock di avvio viene rilasciato dopo la scrittura del PID, così una nuova finestra può rilevare e riusare il motore già attivo senza creare processi duplicati.
-- Documentato il comportamento del supervisore e aggiunto il controllo del launcher alla suite desktop.
+- Le sessioni scomparse dall’elenco Codex non vengono più eliminate dal catalogo Maestro: restano collegate all’Aula, marcate come non disponibili e tornano normali se il provider le espone di nuovo.
+- Le Aule conservate vengono mostrate anche quando il payload della sessione nativa non è più disponibile, evitando il conteggio senza righe corrispondenti.
+- Aggiunto l’archivio globale **Note Maestro**, con lettura e modifica delle note anche quando la conversazione originale non esiste più.
+- Le API delle note non richiedono più che il thread nativo sia presente nel catalogo; eliminazione esplicita della conversazione ed eliminazione dei dati Maestro restano operazioni distinte.
+- Aggiornato il contratto del progetto per impedire che configurazioni o credenziali di un provider cancellino o nascondano Aule e note.
 
-[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.1)
+[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.2)
 
-Source-Commit: b72f5fbaaccb4fb39c306e365113b2da567bd560
+Source-Commit: ca58be4ec404edf318e61832748d5cad300dc76f
