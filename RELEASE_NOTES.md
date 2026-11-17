@@ -1,11 +1,24 @@
-## 2026-11-17 — Versione 2.1.2: dati Maestro indipendenti dall’agente
+## 2026-11-17 — Versione 2.1.3: impostazioni con sidebar e archiviazione Aule
 
-- Le sessioni scomparse dall’elenco Codex non vengono più eliminate dal catalogo Maestro: restano collegate all’Aula, marcate come non disponibili e tornano normali se il provider le espone di nuovo.
-- Le Aule conservate vengono mostrate anche quando il payload della sessione nativa non è più disponibile, evitando il conteggio senza righe corrispondenti.
-- Aggiunto l’archivio globale **Note Maestro**, con lettura e modifica delle note anche quando la conversazione originale non esiste più.
-- Le API delle note non richiedono più che il thread nativo sia presente nel catalogo; eliminazione esplicita della conversazione ed eliminazione dei dati Maestro restano operazioni distinte.
-- Aggiornato il contratto del progetto per impedire che configurazioni o credenziali di un provider cancellino o nascondano Aule e note.
+- Riutilizzati i separatori delle impostazioni tra monitoraggio, compilatore della memoria, indicizzazione semantica e verifica delle connessioni.
+- Aumentata la distanza verticale tra campi, descrizioni e sezioni nelle pagine delle impostazioni.
 
-[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.2)
+### Impostazioni con sidebar
 
-Source-Commit: ca58be4ec404edf318e61832748d5cad300dc76f
+- Modale più ampia con quattro categorie a sinistra e pagina selezionata a destra: Progetti, Agenti e chat, Memoria e Aggiornamenti, mantenendo le impostazioni esistenti.
+- Intestazione e salvataggio restano visibili durante lo scorrimento del contenuto; le modifiche vengono conservate passando tra le pagine.
+- Navigazione accessibile da tastiera, apertura della pagina con campi non validi al salvataggio e collegamento diretto agli Aggiornamenti dall'avviso desktop.
+
+### Avvisi di errore leggibili
+
+- Il banner degli errori usa uno sfondo pieno con contrasto, bordo e ombra: i messaggi sottostanti non interferiscono più con il testo dell'avviso.
+- Testi lunghi vanno a capo senza spostare il pulsante di chiusura fuori dal banner.
+
+### Archiviazione Aule con sessioni assenti
+
+- Archiviazione e ripristino dell'Aula non si bloccano più sulle sessioni native assenti dal catalogo o marcate non disponibili; note e collegamenti rimangono conservati.
+- Le sessioni disponibili continuano a usare le operazioni native, propagandone gli errori.
+
+[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.3)
+
+Source-Commit: 7ceb6b98ffd45c113c0966096ac63289e23751f7
