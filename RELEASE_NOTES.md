@@ -1,24 +1,28 @@
-## 2026-11-17 — Versione 2.1.3: impostazioni con sidebar e archiviazione Aule
+## 2026-11-17 — Versione 2.1.4: UI di Maestro e avvio degli agenti
 
-- Riutilizzati i separatori delle impostazioni tra monitoraggio, compilatore della memoria, indicizzazione semantica e verifica delle connessioni.
-- Aumentata la distanza verticale tra campi, descrizioni e sezioni nelle pagine delle impostazioni.
+- Pannello rinominato Attività dell’Aula, con tab allineate a Cerca un’Aula e alla card degli agenti. Palette progressiva dal Workspace più scuro, alle Aule leggermente più chiare, fino ad Attività.
+- Comando mostrato una sola volta sotto la spiegazione breve salvata; rimossi percorso, stato e uscita. Descrizioni dei wrapper shell riconosciute e vecchi messaggi generici aggiornati al caricamento.
+- Titoli Maestro, Aule e Attività allineati in alto; ricerca e card agenti sulla stessa riga, anche nel desktop.
+- Comandi delle attività espandibili in stile terminale, con output chiuso di default e apertura conservata durante lo streaming e il cambio tab.
+- Ultimo agente visibile subito sotto il titolo dell’Aula anche con sessioni non disponibili; provider recuperato dal collegamento persistito se assente nel catalogo.
+- Fondo elenco Aule con il solo pulsante Nuova aula, leggermente più largo, senza connessione e versione.
+- Angoli ridotti per controlli e card, conservando il contenitore chat; rimossi messaggio sulla ripresa e istruzioni da tastiera del composer.
+- Libro bianco stilizzato senza copertina, con pagine incurvate ad ali di gabbiano, un breve tratto orizzontale centrale per il dorso ed estremità appuntite dove i bordi superiore e inferiore si incontrano, con sagoma ribassata del 50% e distanza di 4 px sotto Maestro, entrambi centrati orizzontalmente nella sidebar, al posto di ORCHESTRATOR e icona SVG centrata per gli allegati.
+- La generazione del titolo usa lo storico caricato anche quando un catalogo precedente indica ancora attesa del primo messaggio.
 
-### Impostazioni con sidebar
+Verifiche locali prima della promozione: 152 test Rust superati (2 prove reali escluse), 34 JavaScript e 9 del launcher desktop; build Linux/WSL e installer Windows compilati. Test browser mirati UI superati; la suite completa ha segnalato timeout durante la compilazione parallela e le riesecuzioni sono rimandate su richiesta. La firma e la pubblicazione sono affidate alla pipeline automatica di main.
 
-- Modale più ampia con quattro categorie a sinistra e pagina selezionata a destra: Progetti, Agenti e chat, Memoria e Aggiornamenti, mantenendo le impostazioni esistenti.
-- Intestazione e salvataggio restano visibili durante lo scorrimento del contenuto; le modifiche vengono conservate passando tra le pagine.
-- Navigazione accessibile da tastiera, apertura della pagina con campi non validi al salvataggio e collegamento diretto agli Aggiornamenti dall'avviso desktop.
+- Timeline dell’Aula con messaggi delle sessioni collegate e separatori per distinguere gli agenti.
 
-### Avvisi di errore leggibili
+### Avvio Kiro e runtime ACP
 
-- Il banner degli errori usa uno sfondo pieno con contrasto, bordo e ombra: i messaggi sottostanti non interferiscono più con il testo dell'avviso.
-- Testi lunghi vanno a capo senza spostare il pulsante di chiusura fuori dal banner.
+- Allineata l'attesa del frontend alle fasi di avvio/ripresa ACP: handshake e configurazione attendono fino a 60 secondi per richiesta, le operazioni UI coinvolte fino a 210 secondi.
+- Gli handshake falliti o annullati non lasciano processi figli attivi su Linux/WSL; un timeout di creazione sessione chiude il runtime prima del nuovo tentativo.
+- Aggiunta diagnostica strutturata dell'handshake con buffer stderr limitato a 4 KiB e classificazione indicativa, senza esporre testo nativo o credenziali.
+- Separata la durata del turno ACP dai timeout di avvio: strumenti e approvazioni possono durare oltre il limite delle richieste di configurazione.
+- Aggiunte regressioni per avvio lento, pulizia dei processi, nuovo tentativo, attesa delle approvazioni e messaggi di errore senza dati nativi.
+- L'handoff dell'Aula verso Pi viene passato come system prompt (`--append-system-prompt`) invece di essere anteposto al primo messaggio utente, così non compare nella conversazione visibile.
 
-### Archiviazione Aule con sessioni assenti
+[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.4)
 
-- Archiviazione e ripristino dell'Aula non si bloccano più sulle sessioni native assenti dal catalogo o marcate non disponibili; note e collegamenti rimangono conservati.
-- Le sessioni disponibili continuano a usare le operazioni native, propagandone gli errori.
-
-[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.3)
-
-Source-Commit: 7ceb6b98ffd45c113c0966096ac63289e23751f7
+Source-Commit: c67fde2747bf441d10d8b35b86ae360cfb5013dd
