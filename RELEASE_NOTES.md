@@ -1,28 +1,13 @@
-## 2026-11-17 — Versione 2.1.4: UI di Maestro e avvio degli agenti
+## 2026-11-18 — Versione 2.1.5: link desktop, marchio e rifiniture UI
 
-- Pannello rinominato Attività dell’Aula, con tab allineate a Cerca un’Aula e alla card degli agenti. Palette progressiva dal Workspace più scuro, alle Aule leggermente più chiare, fino ad Attività.
-- Comando mostrato una sola volta sotto la spiegazione breve salvata; rimossi percorso, stato e uscita. Descrizioni dei wrapper shell riconosciute e vecchi messaggi generici aggiornati al caricamento.
-- Titoli Maestro, Aule e Attività allineati in alto; ricerca e card agenti sulla stessa riga, anche nel desktop.
-- Comandi delle attività espandibili in stile terminale, con output chiuso di default e apertura conservata durante lo streaming e il cambio tab.
-- Ultimo agente visibile subito sotto il titolo dell’Aula anche con sessioni non disponibili; provider recuperato dal collegamento persistito se assente nel catalogo.
-- Fondo elenco Aule con il solo pulsante Nuova aula, leggermente più largo, senza connessione e versione.
-- Angoli ridotti per controlli e card, conservando il contenitore chat; rimossi messaggio sulla ripresa e istruzioni da tastiera del composer.
-- Libro bianco stilizzato senza copertina, con pagine incurvate ad ali di gabbiano, un breve tratto orizzontale centrale per il dorso ed estremità appuntite dove i bordi superiore e inferiore si incontrano, con sagoma ribassata del 50% e distanza di 4 px sotto Maestro, entrambi centrati orizzontalmente nella sidebar, al posto di ORCHESTRATOR e icona SVG centrata per gli allegati.
-- La generazione del titolo usa lo storico caricato anche quando un catalogo precedente indica ancora attesa del primo messaggio.
+- I link della chat, delle attività e dei terminali aprono gli URL nel browser di sistema. I file Windows e WSL si aprono nell’app associata; i percorsi relativi sono risolti nella cartella del progetto. Gli errori per file mancanti e anteprime private di altri client vengono mostrati nella UI.
+- Conservati i collegamenti Markdown ai file e rese cliccabili le immagini Markdown senza caricare contenuti remoti nella chat. Rimossi i riferimenti di riga prima dell’apertura; protocolli eseguibili rifiutati e accesso al comando desktop limitato alla finestra principale e all’origine del motore corrente.
+- Marchio M maiuscola bianca dal tratto sottile con il libro sottostante, condiviso da favicon, icone desktop, schermata di avvio e controlli. Sidebar con nome Maestro e libro; rimossa l’icona aggiuntiva dalla barra superiore desktop.
+- Sidebar Attività dell’Aula estesa fino al bordo superiore anche nel desktop; conservati allineamenti e scorrimento.
+- Rimossi la riga di stato sotto il composer e il logo accanto al pulsante +. Pulsanti Attività e Terminale con contorno e larghezza coerenti.
 
-Verifiche locali prima della promozione: 152 test Rust superati (2 prove reali escluse), 34 JavaScript e 9 del launcher desktop; build Linux/WSL e installer Windows compilati. Test browser mirati UI superati; la suite completa ha segnalato timeout durante la compilazione parallela e le riesecuzioni sono rimandate su richiesta. La firma e la pubblicazione sono affidate alla pipeline automatica di main.
+Verifiche prima della promozione: controlli JavaScript, test Rust e desktop, test browser mirati e build Windows; verificati anche sul desktop Windows reale il bridge nativo, l’apertura nel browser di sistema, i percorsi Windows/WSL/relativi e gli errori visibili. L’aggiornamento deve essere installato: la vecchia app continua a usare il motore e il renderer precedenti fino al riavvio con la nuova versione.
 
-- Timeline dell’Aula con messaggi delle sessioni collegate e separatori per distinguere gli agenti.
+[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.5)
 
-### Avvio Kiro e runtime ACP
-
-- Allineata l'attesa del frontend alle fasi di avvio/ripresa ACP: handshake e configurazione attendono fino a 60 secondi per richiesta, le operazioni UI coinvolte fino a 210 secondi.
-- Gli handshake falliti o annullati non lasciano processi figli attivi su Linux/WSL; un timeout di creazione sessione chiude il runtime prima del nuovo tentativo.
-- Aggiunta diagnostica strutturata dell'handshake con buffer stderr limitato a 4 KiB e classificazione indicativa, senza esporre testo nativo o credenziali.
-- Separata la durata del turno ACP dai timeout di avvio: strumenti e approvazioni possono durare oltre il limite delle richieste di configurazione.
-- Aggiunte regressioni per avvio lento, pulizia dei processi, nuovo tentativo, attesa delle approvazioni e messaggi di errore senza dati nativi.
-- L'handoff dell'Aula verso Pi viene passato come system prompt (`--append-system-prompt`) invece di essere anteposto al primo messaggio utente, così non compare nella conversazione visibile.
-
-[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.4)
-
-Source-Commit: c67fde2747bf441d10d8b35b86ae360cfb5013dd
+Source-Commit: 5d4c4f073fdc3f7f4f9aeff6f3305727a06a5571
