@@ -1,25 +1,7 @@
-## 2026-11-18 — Versione 2.1.6: navigazione, note e comunicazione
+## 2026-11-23 — Versione 2.1.7: streaming Pi
 
-- Avvio desktop con stato essenziale, senza porte, distribuzioni o dettagli del motore nel normale caricamento. Gli errori suggeriscono come procedere; il messaggio originale resta nei dettagli tecnici espandibili. Annunci accessibili e animazione disattivata con movimento ridotto.
-- Modali con titolo dell’azione e logo esistente, senza intestazioni di marca ripetute. Cambio agente, Aula occupata, schermate vuote e richieste con testi brevi; eliminazioni e abbandono delle note usano lo stile distruttivo già presente.
-- Permessi descritti per conseguenze; pulsanti di salvataggio che chiudono la finestra rinominati **Salva e chiudi**. Nessuna modifica alle politiche di esecuzione.
-- Impostazioni con istruzioni semplificate, chiavi salvate indicate senza riferimenti al database, indirizzi API e collegamento GitHub nei dettagli. Categorie orizzontali su mobile, navigazione da tastiera coerente con l’orientamento e apertura automatica dei dettagli contenenti campi non validi.
-- Stati della memoria e modifiche dei file in italiano, dettagli degli errori conservati separatamente, identificativi interni rimossi dalla presentazione dei ricordi. Panoramica Git e diff con descrizioni più concise. Nome, loghi, palette e font mantenuti.
+- Corretto lo streaming delle risposte Pi dopo messaggi intermedi vuoti.
 
-Verifiche locali: controlli sintattici e dei marchi, 36 test JavaScript, 153 Rust superati (2 prove di isolamento reale escluse per prerequisiti), 11 desktop e 114 scenari browser Chromium. Estese le verifiche su avvio, diagnostica, movimento ridotto, validazione nei dettagli richiusi e tastiera delle impostazioni mobile; controllate anche le anteprime desktop e mobile. Nessuna prova manuale su Windows reale o con screen reader.
+[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.7)
 
-Nessuna migrazione distruttiva dei dati o modifica del processo di avvio nativo.
-
-### Navigazione e flussi
-
-- Navigazione distinta per progetto e Aula; progetto, nome dell’Aula e agente attivo visibili. Memoria condivisa nella vista del progetto, dettagli e note negli strumenti dell’Aula.
-- Note condivise fra le sessioni di un’Aula senza riscrivere dati esistenti; archivio con provenienza e salvataggio che conserva l’editor. Endpoint di lettura per Aula aggiunto mantenendo compatibili quelli per sessione.
-- Centro richieste globale inclusivo della sessione corrente, invio e accodamento espliciti, filtri Attive/Archiviate, ripristino delle viste tramite URL e dell’ultima sessione per progetto.
-- Conferme delle modifiche non salvate, errori nel contesto attivo, focus e tastiera corretti per editor, menu, selettori e terminali. Pannelli secondari singoli sulle finestre strette e note utilizzabili con viewport bassi.
-- Rimossa la seconda implementazione frontend non raggiungibile di coda/programmazione. Nome, logo e palette mantenuti.
-
-Verifiche locali: controllo sintattico e marchi, 36 test JavaScript, 153 Rust (2 prove di isolamento reale escluse per prerequisiti), 11 del motore desktop e 114 browser Chromium eseguiti in tre gruppi. Nessuna prova manuale su Windows reale o con screen reader in questa attività.
-
-[Scarica Maestro per Windows](https://github.com/MattiaPaiano91/maestro-releases/releases/tag/v2.1.6)
-
-Source-Commit: 2c77134f137ddff9129c399e54a2fdd71b786f68
+Source-Commit: 697d8bed6a36f9ba89afca3ecfceb465c1334218
